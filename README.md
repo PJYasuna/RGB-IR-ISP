@@ -1,11 +1,5 @@
 # ISP for RGB-IR sensor
 
-ID: 120090521
-
-Name: Jiayang Pang
-
-This is the project for option 5
-
 ## Introduction
 
 The rapid adoption of RGB-IR sensors in the automotive industry has revolutionized both day and night vision capabilities. These sensors have proven to be highly effective in capturing images by combining traditional RGB (Red, Green, Blue) channels with infrared (IR) information. However, the existing Image Signal Processing (ISP) techniques used for other types of sensors are not optimized for RGB-IR sensors. This project aims to address this challenge by developing an improved image processing pipeline specifically tailored for RGB-IR sensors.
