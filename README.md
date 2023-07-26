@@ -20,23 +20,15 @@ To address these challenges in embedded camera systems, an RGB-IR camera has bee
 
 As mentioned before, the standard Bayer CFA comes with a BGGR pattern. The below image represents the pixels in the Bayer format.
 
-<img title="" src="file:///var/folders/h0/5hnmh39n4j380n4p_41rm0v40000gn/T/TemporaryItems/NSIRD_screencaptureui_B29a0X/截屏2023-05-22%20下午9.37.31.png" alt="截屏2023-05-22 下午9.37.31.png" width="218" data-align="center">
-
 But an RGB-IR camera comes with an additional set of pixels that are dedicated to allow only light in the IR spectrum to pass through them. Presence of these pixels facilitates multi-band imaging. Many sensor manufacturers have developed this new CFA that comes with a combination or R,G,B, and IR pixels as shown in the image below:
-
-<img title="" src="file:///var/folders/h0/5hnmh39n4j380n4p_41rm0v40000gn/T/TemporaryItems/NSIRD_screencaptureui_OmHUyZ/截屏2023-05-22%20下午9.38.26.png" alt="截屏2023-05-22 下午9.38.26.png" width="217" data-align="center">
 
 Having an RGB-IR filter alone is not enough to effectively use the imaging technique. It is important to choose the right camera components such as the sensor, lens, and ISP (Image Signal Processor) that support RGB-IR imaging.
 
 ### ISP
 
-<img title="" src="file:///var/folders/h0/5hnmh39n4j380n4p_41rm0v40000gn/T/TemporaryItems/NSIRD_screencaptureui_htPTsB/截屏2023-05-22%20下午9.57.08.png" alt="截屏2023-05-22 下午9.57.08.png" width="432" data-align="center">
-
 An ISP is an application processor used for digital image processing, specifically for converting RAW images from imaging sensors to RGB/YUV images for further processing or display. 
 
-The proposed ISP pipeline includes the following modules: DPC (dead pixel correction), BLC (black level compensation), ANF (anti-aliasing noise filter), AWB (auto white balance gain control), CFA (color filter array interpolation), CNF (chroma noise filtering), CCM (color correction matrix), GAC (gamma correction), CSC (color space conversion), NLM (Non-Local Means denoising), BNF (bilateral noise filtering), NF (noise filter for luma and chroma), EE (edge enhancement), FCS (false color suppression), HSC (hue/saturation/control), and BCC (brightness/contrast control).
-
-<img title="" src="file:///var/folders/h0/5hnmh39n4j380n4p_41rm0v40000gn/T/TemporaryItems/NSIRD_screencaptureui_zxjusF/截屏2023-05-22%20下午9.57.38.png" alt="截屏2023-05-22 下午9.57.38.png" data-align="center" width="469">
+The proposed ISP pipeline includes the following modules: DPC (dead pixel correction), BLC (black level compensation), ANF (anti-aliasing noise filter), AWB (auto white balance gain control), CFA (color filter array interpolation), CNF (chroma noise filtering), CCM (color correction matrix), GAC (gamma correction), CSC (color space conversion), NLM (Non-Local Means denoising), BNF (bilateral noise filtering), NF (noise filter for luma and chroma), EE (edge enhancement), FCS (false color suppression), HSC (hue/saturation/control), and BCC (brightness/contrast control)
 
 ## Methodology
 
@@ -50,27 +42,15 @@ For a comprehensive understanding of the fundamental modules involved in Image S
 
 The proposed method for RGB-NIR filter sampling utilizes a 5x5 matrix to extract B and R pixel information, which is then used to replace corresponding pixels that match the Bayer pattern pixel location. In order to convert the R pixels in the G/B row of the Bayer CFA, the B channel values within the 5x5 matrix are summed and averaged to determine the replacement value for the B pixel at the R location.
 
-<img title="" src="file:///var/folders/h0/5hnmh39n4j380n4p_41rm0v40000gn/T/TemporaryItems/NSIRD_screencaptureui_qzIvRW/截屏2023-05-22%20下午10.19.15.png" alt="截屏2023-05-22 下午10.19.15.png" width="359" data-align="center">
-
 #### Replacing IR with R
 
 To convert the IR pixels in the G/R row of the Bayer CFA, a two-step process is employed using both a positive oblique direction and a negative oblique direction for sampling. Within the 5x5 matrix, a 3x3 sub-matrix is used to convert the IRLeft-up and IRRight-down pixels from the surrounding positive oblique R pixels. Similarly, the IRRight-up and IRLeft-down pixels are converted from the surrounding negative oblique R pixels. 
 
-<img title="" src="file:///var/folders/h0/5hnmh39n4j380n4p_41rm0v40000gn/T/TemporaryItems/NSIRD_screencaptureui_RCXjP5/截屏2023-05-22%20下午10.22.51.png" alt="截屏2023-05-22 下午10.22.51.png" width="446" data-align="center">
-
 Finally the RGB-IR pattern is converted to BGGR pattern.
-
-![截屏2023-05-23 下午12.41.08.png](/var/folders/h0/5hnmh39n4j380n4p_41rm0v40000gn/T/TemporaryItems/NSIRD_screencaptureui_maTzEd/截屏2023-05-23%20下午12.41.08.png)
 
 ### Extracting Interpolated IR Image
 
-<img title="" src="file:///var/folders/h0/5hnmh39n4j380n4p_41rm0v40000gn/T/TemporaryItems/NSIRD_screencaptureui_V8v3Ls/截屏2023-05-22%20下午10.30.52.png" alt="截屏2023-05-22 下午10.30.52.png" width="187" data-align="center">
-
 The objective of this step is to extract the interpolated IR image from the RGB-IR image using bilinear interpolation. It is important to note that for the IR image, only the IR channel information should be taken into consideration. To achieve this, the 4x4 matrix is divided into 2x2 sub-matrices, and within each sub-matrix, interpolation is performed for the pixels N1, N2, and N3 using the IR information.
-
-<img src="file:///Users/pangjiayang/Downloads/ir.png" title="" alt="" data-align="center">
-
-<img title="" src="file:///var/folders/h0/5hnmh39n4j380n4p_41rm0v40000gn/T/com.apple.Notes/HardLinkURLTemp/343D5618-0A0B-433E-9F14-1CB9468598DA/1684817740/N1.png" alt="" data-align="center" width="209">
 
 For N1, the interpolation is calculated as follows:
 
@@ -111,58 +91,6 @@ python demo.py
 The ISP outputs will be saved to `./output` directory.
 
 The only required package for pipeline execution is `numpy`. `opencv-python` and `scikit-image` are required only for data IO.
-
-## Results
-
-### Results For Interpolated IR Image
-
-<img title="" src="output/ir_image.png" alt="1_1.IR" width="280"><img title="" src="output/ir_image_no.png" alt="1_2.IR" width="280">
-
-            1_1.raw with light                                          1_1.raw no light
-
-<img title="1_1.raw with light" src="file:///Users/pangjiayang/fast-openISP/output/ir_image.png" alt="" width="280"><img src="file:///Users/pangjiayang/fast-openISP/output/ir_image_no.png" title="" alt="" width="280">
-
-            2_1.raw with light                                           2_2.raw no light
-
-                                                                      
-
-### Results for RGB image
-
-<img title="" src="file:///Users/pangjiayang/fast-openISP/output/dpc.jpg" width="280"><img title="" src="file:///Users/pangjiayang/fast-openISP/output/blc.jpg" alt="" width="280">
-
-dpc blc   
-
-<img title="" src="file:///Users/pangjiayang/fast-openISP/output/aaf.jpg" width="280"><img title="" src="file:///Users/pangjiayang/fast-openISP/output/awb.jpg" width="280">
-
-aaf awb
-
-<img title="" src="file:///Users/pangjiayang/fast-openISP/output/cnf.jpg" width="280"><img title="" src="file:///Users/pangjiayang/fast-openISP/output/cfa.jpg" width="280">
-
-cnf cfa
-
-<img title="" src="file:///Users/pangjiayang/fast-openISP/output/ccm.jpg"  width="280"><img title="" src="file:///Users/pangjiayang/fast-openISP/output/gac.jpg"  width="280">
-
-ccm gac
-
-<img title="" src="file:///Users/pangjiayang/fast-openISP/output/csc.jpg" width="280"><img title="" src="file:///Users/pangjiayang/fast-openISP/output/nlm.jpg" width="280">
-
-csc nlm
-
-<img title="" src="file:///Users/pangjiayang/fast-openISP/output/bnf.jpg" width="280"><img title="" src="file:///Users/pangjiayang/fast-openISP/output/ceh.jpg"  width="280">
-
-bnf ceh
-
-<img title="" src="file:///Users/pangjiayang/fast-openISP/output/fcs.jpg" width="280"><img title="" src="file:///Users/pangjiayang/fast-openISP/output/hsc.jpg"  width="280">
-
-fcs hsc
-
-<img title="" src="file:///Users/pangjiayang/fast-openISP/output/bcc.jpg" width="280">
-
-bcc 
-
-<img title="" src="file:///Users/pangjiayang/fast-openISP/output/dpc.jpg" alt="dpc.jpg" width="280"><img title="" src="file:///Users/pangjiayang/fast-openISP/output/bcc.jpg" alt="" width="280">
-
-                                                            dpc vs bcc
 
 ### Analysis
 
